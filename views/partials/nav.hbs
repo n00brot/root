@@ -1,0 +1,34 @@
+<nav class="nav">
+  <a href="/" class="nav-brand">
+    <span class="nav-brand-dot"></span>
+    {{config.SITE_NAME}}
+  </a>
+
+  {{#if user}}
+  <div class="nav-links">
+    <a href="/dashboard" class="nav-link {{#if (eq currentPath '/dashboard')}}active{{/if}}">Dashboard</a>
+    <a href="/tools/files" class="nav-link">Files</a>
+    <a href="/tools/notes" class="nav-link">Notes</a>
+    {{#if isAdmin}}
+    <a href="/admin" class="nav-link {{#if (eq currentPath '/admin')}}active{{/if}}">Admin</a>
+    {{/if}}
+  </div>
+
+  <div class="nav-actions">
+    <span class="text-mono text-xs text-muted" id="live-clock"></span>
+    <a href="/settings" class="nav-user">
+      {{#if user.avatar}}
+      <img src="{{user.avatar}}" alt="{{user.name}}" />
+      {{else}}
+      <span class="nav-user-initials">{{user.name.[0]}}</span>
+      {{/if}}
+      <span>{{user.name}}</span>
+    </a>
+    <button class="btn btn-ghost" style="padding:0.4rem 0.75rem;font-size:0.78rem;" data-logout>Sign out</button>
+  </div>
+  {{else}}
+  <div class="nav-actions" style="margin-left:auto;">
+    <a href="/login" class="btn btn-ghost">Sign in</a>
+  </div>
+  {{/if}}
+</nav>

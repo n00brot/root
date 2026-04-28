@@ -1,0 +1,62 @@
+<div class="dashboard container">
+  <div class="dashboard-header fade-up">
+    <h1 class="dashboard-greeting">Admin <em>Panel</em></h1>
+    <p class="dashboard-meta">{{config.SITE_NAME}} · System Administration</p>
+  </div>
+
+  <div class="admin-grid fade-up delay-1">
+    <aside class="panel-card admin-sidebar">
+      <div class="section-label">Overview</div>
+      <p class="panel-copy">Manage user access, review commits, and keep your platform secure from a single admin workspace.</p>
+      <div class="metric-list">
+        <div class="metric-item">
+          <span class="metric-value">{{users.length}}</span>
+          <span class="metric-label">Registered users</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-value">v{{config.VERSION}}</span>
+          <span class="metric-label">App version</span>
+        </div>
+      </div>
+      <div class="panel-actions">
+        <a href="/tools/commit-review" class="btn btn-ghost">Commit review</a>
+        <a href="/settings" class="btn btn-ghost">Settings</a>
+      </div>
+    </aside>
+
+    <section class="panel-card">
+      <div class="section-label">Users ({{users.length}})</div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Last login</th>
+              <th>Joined</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each users}}
+            <tr>
+              <td class="user-name-cell">
+                {{#if this.avatar}}
+                <img src="{{this.avatar}}" alt="{{this.name}}" />
+                {{/if}}
+                <span>{{this.name}}</span>
+              </td>
+              <td class="mono-cell">{{this.email}}</td>
+              <td>
+                <span class="status-pill {{this.role}}">{{this.role}}</span>
+              </td>
+              <td>{{formatDate this.last_login}}</td>
+              <td>{{formatDate this.created_at}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>

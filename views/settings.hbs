@@ -1,0 +1,76 @@
+<div class="dashboard container">
+  <div class="dashboard-header fade-up">
+    <h1 class="dashboard-greeting">Settings</h1>
+    <p class="dashboard-meta">Manage your account, preferences, and security.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;">
+
+    <!-- Profile -->
+    <div class="card fade-up delay-1">
+      <div class="section-label" style="margin-bottom:1.25rem;">Profile</div>
+      <div class="flex items-center gap-2 mb-3">
+        {{#if user.avatar}}
+        <img src="{{user.avatar}}" alt="{{user.name}}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;" />
+        {{else}}
+        <div class="nav-user-initials" style="width:48px;height:48px;font-size:1.1rem;">{{user.name.[0]}}</div>
+        {{/if}}
+        <div>
+          <div style="font-weight:400;color:var(--text);">{{user.name}}</div>
+          <div class="text-xs text-muted">{{user.email}}</div>
+        </div>
+      </div>
+      <div class="text-xs text-muted" style="padding:0.75rem;background:var(--surface-2);border-radius:var(--radius);font-family:var(--font-mono);">
+        Role: <span style="color:var(--biolum)">{{user.role}}</span><br>
+        Member since: {{formatDate user.created_at}}
+      </div>
+    </div>
+
+    <!-- Preferences -->
+    <div class="card fade-up delay-2">
+      <div class="section-label" style="margin-bottom:1rem;">Preferences</div>
+      {{#if saved}}
+      <div style="padding:0.75rem 1rem;margin-bottom:1rem;border-radius:var(--radius);background:rgba(0,200,150,0.1);color:var(--biolum);border:1px solid rgba(0,200,150,0.2);">
+        Your settings have been saved.
+      </div>
+      {{/if}}
+      <form action="/settings" method="POST" style="display:grid;gap:1rem;">
+        <label class="text-sm text-muted" style="display:block;">
+          <div style="margin-bottom:0.5rem;font-weight:600;">Color mode</div>
+          <select name="theme" style="width:100%;padding:0.85rem;border-radius:var(--radius);border:1px solid rgba(255,255,255,0.12);background:var(--surface);color:var(--text);">
+            <option value="system" {{#if (eq settings.theme "system")}}selected{{/if}}>System default</option>
+            <option value="dark" {{#if (eq settings.theme "dark")}}selected{{/if}}>Dark mode</option>
+            <option value="light" {{#if (eq settings.theme "light")}}selected{{/if}}>Light mode</option>
+          </select>
+        </label>
+
+        <label class="text-sm text-muted" style="display:block;">
+          <div style="margin-bottom:0.5rem;font-weight:600;">Auto-lock</div>
+          <select name="autoLock" style="width:100%;padding:0.85rem;border-radius:var(--radius);border:1px solid rgba(255,255,255,0.12);background:var(--surface);color:var(--text);">
+            <option value="never" {{#if (eq settings.autoLock "never")}}selected{{/if}}>Never</option>
+            <option value="5" {{#if (eq settings.autoLock "5")}}selected{{/if}}>After 5 minutes</option>
+            <option value="15" {{#if (eq settings.autoLock "15")}}selected{{/if}}>After 15 minutes</option>
+            <option value="30" {{#if (eq settings.autoLock "30")}}selected{{/if}}>After 30 minutes</option>
+          </select>
+        </label>
+
+        <label class="text-sm text-muted" style="display:flex;align-items:center;gap:0.75rem;">
+          <input type="checkbox" name="showEmail" {{#if settings.showEmail}}checked{{/if}} />
+          <span>Show my email in the app header and profile cards.</span>
+        </label>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Save settings</button>
+      </form>
+    </div>
+
+    <!-- Security -->
+    <div class="card fade-up delay-3">
+      <div class="section-label" style="margin-bottom:1.25rem;">Security</div>
+      <p class="text-sm text-muted mb-3">Your account is protected by Google authentication. Use the button below to end this session immediately.</p>
+      <button class="btn btn-danger" data-logout style="width:100%;justify-content:center;">
+        Sign out of {{config.SITE_NAME}}
+      </button>
+    </div>
+
+  </div>
+</div>

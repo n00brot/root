@@ -1,0 +1,85 @@
+<div class="dashboard container">
+  <div class="dashboard-header fade-up">
+    <h1 class="dashboard-greeting">
+      Good {{greeting}}, <em>{{user.name}}</em>
+    </h1>
+    <p class="dashboard-meta">
+      {{config.SITE_NAME}} · <span id="live-date"></span>
+    </p>
+  </div>
+
+  {{#if stats}}
+  <div class="stats-bar fade-up delay-1">
+    <div class="stat-cell">
+      <div class="stat-value">{{stats.users}}</div>
+      <div class="stat-label">Users</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-value">{{toolCount}}</div>
+      <div class="stat-label">Tools</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-value">v{{config.VERSION}}</div>
+      <div class="stat-label">Version</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-value" id="uptime-display">—</div>
+      <div class="stat-label">Session</div>
+    </div>
+  </div>
+  {{/if}}
+
+  <!-- Tools Grid -->
+  <div class="mb-4 fade-up delay-2">
+    <div class="section-label">Tools &amp; Systems</div>
+    <div class="tool-grid">
+      {{#each tools}}
+      <a href="{{this.url}}" class="tool-card">
+        <div class="tool-icon">{{this.icon}}</div>
+        <div class="tool-name">{{this.name}}</div>
+        <div class="tool-desc">{{this.description}}</div>
+      </a>
+      {{else}}
+      <p class="text-muted text-sm">No tools configured yet.</p>
+      {{/each}}
+    </div>
+  </div>
+
+  {{#if activity.length}}
+  <!-- Activity Log (admin only) -->
+  <div class="fade-up delay-3">
+    <div class="section-label">Recent Activity</div>
+    <ul class="activity-list">
+      {{#each activity}}
+      <li class="activity-item">
+        <span class="activity-action">{{this.action}}</span>
+        <span class="text-sm text-muted">{{this.user_name}}</span>
+        {{#if this.detail}}<span class="text-xs text-muted">· {{this.detail}}</span>{{/if}}
+        <span class="activity-time">{{formatDate this.created_at}}</span>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+  {{/if}}
+</div>
+
+<script>
+  // Live date
+  const dateEl = document.getElementById('live-date');
+  if (dateEl) {
+    dateEl.textContent = new Date().toLocaleDateString('en-GB', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    });
+  }
+  // Session uptime
+  const start = Date.now();
+  const uptimeEl = document.getElementById('uptime-display');
+  if (uptimeEl) {
+    setInterval(() => {
+      const s = Math.floor((Date.now() - start) / 1000);
+      const m = Math.floor(s / 60);
+      const h = Math.floor(m / 60);
+      uptimeEl.textContent = h > 0 ? `${h}h ${m % 60}m` : `${m}m ${s % 60}s`;
+    }, 1000);
+  }
+</script>

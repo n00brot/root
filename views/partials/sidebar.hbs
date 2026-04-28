@@ -1,0 +1,55 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <a href="/dashboard" class="sidebar-logo">
+      <span class="logo-icon">⬡</span>
+      <span class="logo-text">{{config.SITE_NAME}}</span>
+    </a>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-title">Main</div>
+      <a href="/dashboard" class="sidebar-link {{#if (eq currentPath '/dashboard')}}active{{/if}}">
+        <span class="nav-icon">◆</span>
+        <span>Dashboard</span>
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Tools</div>
+      <a href="/tools/files" class="sidebar-link {{#if (eq currentPath '/tools/files')}}active{{/if}}">
+        <span class="nav-icon">◫</span>
+        <span>Files</span>
+      </a>
+      <a href="/tools/notes" class="sidebar-link {{#if (eq currentPath '/tools/notes')}}active{{/if}}">
+        <span class="nav-icon">◻</span>
+        <span>Notes</span>
+      </a>
+    </div>
+
+    {{#if isAdmin}}
+    <div class="nav-section">
+      <div class="nav-section-title">Admin</div>
+      <a href="/admin" class="sidebar-link {{#if (eq currentPath '/admin')}}active{{/if}}">
+        <span class="nav-icon">⚙</span>
+        <span>Panel</span>
+      </a>
+      <a href="/tools/commit-review" class="sidebar-link {{#if (eq currentPath '/tools/commit-review')}}active{{/if}}">
+        <span class="nav-icon">🔀</span>
+        <span>Commits</span>
+      </a>
+    </div>
+    {{/if}}
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="/settings" class="sidebar-user">
+      {{#if user.avatar}}
+      <img src="{{user.avatar}}" alt="{{user.name}}" />
+      {{else}}
+      <div class="user-avatar-fallback">{{user.name.[0]}}</div>
+      {{/if}}
+      <span>{{user.name}}</span>
+    </a>
+  </div>
+</aside>

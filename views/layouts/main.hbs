@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}}</title>
+  <meta name="description" content="{{config.SITE_DESCRIPTION}}" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='28'>⬡</text></svg>" />
+</head>
+<body class="{{themeClass}}">
+  <!-- Ocean animated canvas background -->
+  <canvas id="ocean-canvas" class="ocean-canvas" aria-hidden="true"></canvas>
+
+  <div class="app-shell {{#if user}}with-sidebar{{/if}}">
+    <!-- Sidebar navigation (authenticated users) -->
+    {{#if user}}
+    {{> sidebar}}
+    {{/if}}
+
+    <div class="app-main">
+      <!-- Navigation -->
+      {{> nav}}
+
+      <!-- Logout form (hidden, submitted by JS) -->
+      {{#if user}}
+      <form id="logout-form" action="/logout" method="POST" style="display:none"></form>
+      {{/if}}
+
+      <!-- Page content -->
+      <main>
+        {{{body}}}
+      </main>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

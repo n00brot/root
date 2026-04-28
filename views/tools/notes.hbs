@@ -1,0 +1,314 @@
+<div class="notes-shell fade-up">
+  <!-- Sidebar -->
+  <div class="notes-sidebar">
+    <div class="notes-sidebar-header">
+      <span class="text-mono text-xs text-muted">◻ Notes</span>
+      <button class="btn btn-ghost" id="btn-new-note" style="padding:0.3rem 0.65rem;font-size:0.75rem;">+ New</button>
+    </div>
+    <div class="notes-search">
+      <input type="text" id="note-search" placeholder="Search notes…" class="notes-search-input" />
+    </div>
+    <div class="notes-list" id="notes-list">
+      <div class="notes-empty-list">No notes yet.<br>Click + New to start.</div>
+    </div>
+  </div>
+
+  <!-- Editor -->
+  <div class="notes-editor-wrap" id="editor-wrap">
+    <div class="notes-editor-empty" id="editor-empty">
+      <div style="font-family:var(--font-display);font-size:2.5rem;font-weight:300;color:var(--text-3);margin-bottom:0.5rem;">Select a note</div>
+      <div class="text-xs text-muted">or create a new one</div>
+    </div>
+
+    <div class="notes-editor-active" id="editor-active" style="display:none">
+      <div class="notes-editor-toolbar">
+        <input type="text" id="note-title" placeholder="Untitled" class="note-title-input" />
+        <div class="notes-toolbar-actions">
+          <span class="text-xs text-muted" id="save-status">Saved</span>
+          <button class="btn btn-ghost" style="padding:0.35rem 0.7rem;font-size:0.75rem;color:#ff5555;" id="btn-delete-note">Delete</button>
+        </div>
+      </div>
+
+      <!-- Formatting bar -->
+      <div class="notes-format-bar">
+        <button class="fmt-btn" data-cmd="bold" title="Bold"><b>B</b></button>
+        <button class="fmt-btn" data-cmd="italic" title="Italic"><i>I</i></button>
+        <button class="fmt-btn" data-cmd="underline" title="Underline"><u>U</u></button>
+        <div class="fmt-sep"></div>
+        <button class="fmt-btn" data-cmd="insertUnorderedList" title="List">≡</button>
+        <button class="fmt-btn" data-cmd="insertOrderedList" title="Numbered">①</button>
+        <div class="fmt-sep"></div>
+        <button class="fmt-btn" data-cmd="formatBlock" data-val="H2" title="Heading">H</button>
+        <button class="fmt-btn" data-cmd="formatBlock" data-val="P" title="Paragraph">¶</button>
+        <div class="fmt-sep"></div>
+        <button class="fmt-btn" data-cmd="removeFormat" title="Clear">✕</button>
+      </div>
+
+      <div
+        id="note-body"
+        class="note-body"
+        contenteditable="true"
+        spellcheck="true"
+        placeholder="Start writing…"
+      ></div>
+
+      <div class="notes-meta text-xs text-muted text-mono" id="note-meta"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+.notes-shell {
+  display: flex;
+  height: calc(100vh - 56px);
+  margin-top: 56px;
+}
+
+.notes-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.notes-sidebar-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.notes-search { padding: 0.5rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.notes-search-input {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 0.4rem 0.7rem;
+  font-family: var(--font-body); font-size: 0.78rem; color: var(--text-2);
+  outline: none;
+}
+.notes-search-input:focus { border-color: var(--border-glow); }
+.notes-search-input::placeholder { color: var(--text-3); }
+
+.notes-list { flex: 1; overflow-y: auto; padding: 0.5rem; }
+.notes-empty-list { color: var(--text-3); font-size: 0.78rem; text-align: center; padding: 2rem 1rem; line-height: 1.8; }
+
+.note-list-item {
+  padding: 0.65rem 0.75rem; border-radius: var(--radius); cursor: pointer;
+  border: 1px solid transparent; margin-bottom: 2px;
+  transition: all 0.15s ease;
+}
+.note-list-item:hover { background: var(--surface-2); }
+.note-list-item.active { background: var(--accent-dim); border-color: var(--border-glow); }
+.note-list-title { font-size: 0.82rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.note-list-preview { font-size: 0.72rem; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 0.2rem; }
+.note-list-date { font-size: 0.65rem; color: var(--text-3); font-family: var(--font-mono); margin-top: 0.3rem; }
+
+.notes-editor-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+.notes-editor-empty {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+}
+
+.notes-editor-active { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+.notes-editor-toolbar {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.note-title-input {
+  flex: 1; background: none; border: none; outline: none;
+  font-family: var(--font-display); font-size: 1.4rem; font-weight: 300;
+  color: var(--text); letter-spacing: 0.01em;
+}
+.note-title-input::placeholder { color: var(--text-3); }
+.notes-toolbar-actions { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
+
+.notes-format-bar {
+  display: flex; align-items: center; gap: 2px;
+  padding: 0.4rem 1.5rem;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.fmt-btn {
+  padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.8rem;
+  color: var(--text-3); transition: all 0.1s ease; min-width: 28px;
+  text-align: center;
+}
+.fmt-btn:hover { background: var(--surface-2); color: var(--text); }
+.fmt-sep { width: 1px; height: 16px; background: var(--border); margin: 0 4px; }
+
+.note-body {
+  flex: 1; padding: 2rem 2.5rem; overflow-y: auto;
+  font-size: 0.95rem; color: var(--text-2); line-height: 1.8;
+  outline: none;
+}
+.note-body:empty::before {
+  content: attr(placeholder); color: var(--text-3); pointer-events: none;
+}
+.note-body h1, .note-body h2, .note-body h3 {
+  font-family: var(--font-display); font-weight: 300; color: var(--text);
+  margin: 1.5rem 0 0.5rem;
+}
+.note-body h2 { font-size: 1.5rem; }
+.note-body p { margin-bottom: 0.75rem; }
+.note-body ul, .note-body ol { padding-left: 1.5rem; margin-bottom: 0.75rem; }
+.note-body li { margin-bottom: 0.25rem; }
+.note-body strong { color: var(--text); }
+.note-body a { color: var(--biolum); }
+
+.notes-meta {
+  padding: 0.5rem 2.5rem;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .notes-sidebar { width: 180px; }
+  .note-body { padding: 1rem; }
+}
+</style>
+
+<script>
+(function() {
+  let notes = [];
+  let currentId = null;
+  let saveTimer = null;
+
+  const notesList   = document.getElementById('notes-list');
+  const editorEmpty = document.getElementById('editor-empty');
+  const editorActive= document.getElementById('editor-active');
+  const titleInput  = document.getElementById('note-title');
+  const bodyEl      = document.getElementById('note-body');
+  const saveStatus  = document.getElementById('save-status');
+  const noteMeta    = document.getElementById('note-meta');
+  const searchInput = document.getElementById('note-search');
+
+  // ── API ────────────────────────────────────────────────────
+  async function api(url, opts) {
+    const r = await fetch(url, { headers: {'Content-Type':'application/json'}, ...opts });
+    return r.json();
+  }
+
+  // ── Load notes ─────────────────────────────────────────────
+  async function loadNotes() {
+    const data = await api('/api/notes');
+    notes = data.notes || [];
+    renderList(notes);
+  }
+
+  function renderList(list) {
+    if (!list.length) {
+      notesList.innerHTML = '<div class="notes-empty-list">No notes yet.<br>Click + New to start.</div>';
+      return;
+    }
+    notesList.innerHTML = '';
+    list.forEach(n => {
+      const el = document.createElement('div');
+      el.className = 'note-list-item' + (n.id === currentId ? ' active' : '');
+      el.dataset.id = n.id;
+      const preview = (n.body || '').replace(/<[^>]+>/g, '').substring(0, 60);
+      el.innerHTML = `
+        <div class="note-list-title">${n.title || 'Untitled'}</div>
+        <div class="note-list-preview">${preview || '—'}</div>
+        <div class="note-list-date">${fmtDate(n.updated_at)}</div>
+      `;
+      el.addEventListener('click', () => openNote(n.id));
+      notesList.appendChild(el);
+    });
+  }
+
+  function fmtDate(d) {
+    if (!d) return '';
+    const date = new Date(d);
+    const now  = new Date();
+    if (date.toDateString() === now.toDateString()) {
+      return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    }
+    return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+  }
+
+  // ── Open note ──────────────────────────────────────────────
+  async function openNote(id) {
+    currentId = id;
+    const data = await api('/api/notes/' + id);
+    const note = data.note;
+    editorEmpty.style.display = 'none';
+    editorActive.style.display = 'flex';
+    titleInput.value = note.title || '';
+    bodyEl.innerHTML = note.body || '';
+    noteMeta.textContent = 'Updated ' + fmtDate(note.updated_at);
+    saveStatus.textContent = 'Saved';
+    document.querySelectorAll('.note-list-item').forEach(el => {
+      el.classList.toggle('active', el.dataset.id == id);
+    });
+    bodyEl.focus();
+  }
+
+  // ── New note ───────────────────────────────────────────────
+  document.getElementById('btn-new-note').addEventListener('click', async () => {
+    const data = await api('/api/notes', { method: 'POST',
+      body: JSON.stringify({ title: 'Untitled', body: '' }) });
+    await loadNotes();
+    openNote(data.id);
+  });
+
+  // ── Delete note ────────────────────────────────────────────
+  document.getElementById('btn-delete-note').addEventListener('click', async () => {
+    if (!currentId || !confirm('Delete this note?')) return;
+    await api('/api/notes/' + currentId, { method: 'DELETE' });
+    currentId = null;
+    editorActive.style.display = 'none';
+    editorEmpty.style.display  = 'flex';
+    await loadNotes();
+  });
+
+  // ── Autosave ───────────────────────────────────────────────
+  function triggerSave() {
+    saveStatus.textContent = 'Saving…';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveNote, 800);
+  }
+
+  async function saveNote() {
+    if (!currentId) return;
+    await api('/api/notes/' + currentId, {
+      method: 'PUT',
+      body: JSON.stringify({ title: titleInput.value, body: bodyEl.innerHTML }),
+    });
+    saveStatus.textContent = 'Saved';
+    noteMeta.textContent = 'Updated just now';
+    const idx = notes.findIndex(n => n.id === currentId);
+    if (idx >= 0) { notes[idx].title = titleInput.value; notes[idx].body = bodyEl.innerHTML; }
+    renderList(notes);
+    document.querySelector('.note-list-item.active')?.scrollIntoView({ block: 'nearest' });
+  }
+
+  titleInput.addEventListener('input', triggerSave);
+  bodyEl.addEventListener('input', triggerSave);
+
+  // ── Format bar ─────────────────────────────────────────────
+  document.querySelectorAll('.fmt-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      const cmd = btn.dataset.cmd;
+      const val = btn.dataset.val || null;
+      document.execCommand(cmd, false, val);
+      bodyEl.focus();
+    });
+  });
+
+  // ── Search ─────────────────────────────────────────────────
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase();
+    renderList(q ? notes.filter(n =>
+      (n.title||'').toLowerCase().includes(q) ||
+      (n.body||'').replace(/<[^>]+>/g,'').toLowerCase().includes(q)
+    ) : notes);
+  });
+
+  // ── Init ───────────────────────────────────────────────────
+  loadNotes();
+})();
+</script>
